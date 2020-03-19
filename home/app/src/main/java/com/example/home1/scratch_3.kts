@@ -1,7 +1,7 @@
 import kotlin.math.sqrt
 
 //ex1
-open class Account(var balance: Double) {
+open class Account(private var balance: Double) {
 
     open fun withdraw(amount: Double) {
         balance -= amount
@@ -10,14 +10,18 @@ open class Account(var balance: Double) {
     fun deposit(amount: Double) {
         balance += amount
     }
+
+    fun actualBalance(): Double = balance
 }
 
 class SavingAccount(money: Double) : Account(money) {
 
+    private var balance = money
+
     override fun withdraw(amount: Double) {
 
-        if (amount < balance) {
-            balance -= amount
+        if (amount < super.actualBalance()) {
+            super.withdraw(amount)
         } else {
             println("Not enough money to withdraw")
         }
@@ -27,15 +31,15 @@ class SavingAccount(money: Double) : Account(money) {
 
 val account = Account(12.2)
 account.deposit(2.0)
-println("The balance is ${account.balance}")
+println("The balance is ${account.actualBalance()}")
 account.withdraw(10.0)
-println("The balance is ${account.balance}")
+println("The balance is ${account.actualBalance()}")
 
 val account2 = SavingAccount(13.0)
 account2.withdraw(14.0)
-println(account2.balance)
+println(account2.actualBalance())
 account2.withdraw(12.0)
-println(account2.balance)
+println(account2.actualBalance())
 
 //ex2
 
@@ -45,10 +49,10 @@ println(account2.balance)
 
 fun getCardinals(angle: Int): String {
     return when (angle) {
-        in 45..45 -> "NE"
-        in 315..315 -> "NV"
-        in 225..225 -> "SV"
-        in 135..135 -> "SE"
+        45 -> "NE"
+        315 -> "NV"
+        225 -> "SV"
+        135 -> "SE"
         in 46..134 -> "E"
         in 134..224 -> "S"
         in 226..314 -> "W"
@@ -63,6 +67,9 @@ println(getCardinals(45))
 println(getCardinals(135))
 
 //ex3
+
+fun getNrOfVowels2(word: String) = word.filter { it in "AEIOUaeuio" }.count()
+getNrOfVowels2("Dia")
 
 fun getNrOfVowels(word: String): Int {
     val vowels = "aeiouAEIOU"
@@ -111,9 +118,11 @@ fun initShape(shape: RectangularShape?) {
 }
 
 fun drawShape(shape: RectangularShape?) {
-    shape?.also { validateShape(it) }
-        ?.also { it.measure() }
-        ?.also { it.render() }
+    shape?.also {
+        validateShape(it)
+        it.measure()
+        it.render()
+    }
 }
 
 //ex5
